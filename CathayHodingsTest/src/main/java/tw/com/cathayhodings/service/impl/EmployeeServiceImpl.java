@@ -1,5 +1,6 @@
 package tw.com.cathayhodings.service.impl;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -29,10 +30,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         String employeeId = employeeBo.getEmployeeId();
         Optional<Employee> employee = employeeDao.findById(employeeId);
-        if (!employee.isPresent())
+        if (!employee.isPresent()) {
+            employeeBo.setCreateTime(new Date());
             save(employeeBo);
-        else
+        } else {
             EmployeeServiceImpl.logger.info("already exists (" + employeeId + ")");
+        }
     }
 
     /**
@@ -44,10 +47,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         String employeeId = employeeBo.getEmployeeId();
         Optional<Employee> employee = employeeDao.findById(employeeId);
-        if (employee.isPresent())
+        if (employee.isPresent()) {
+            employeeBo.setCreateTime(employee.get().getCreateTime());
+            employeeBo.setModifyTime(new Date());
             save(employeeBo);
-        else
+        } else {
             EmployeeServiceImpl.logger.info("not found (" + employeeId + ")");
+        }
     }
 
     /**
@@ -73,6 +79,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setTel(employeeBo.getTel());
         employee.setAddress(employeeBo.getAddress());
         employee.setAge(employeeBo.getAge());
+        employee.setCreateTime(employeeBo.getCreateTime());
+        employee.setModifyTime(employeeBo.getModifyTime());
 
         employeeDao.save(employee);
     }

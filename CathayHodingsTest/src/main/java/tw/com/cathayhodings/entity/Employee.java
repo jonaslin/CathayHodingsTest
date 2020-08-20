@@ -1,5 +1,7 @@
 package tw.com.cathayhodings.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,11 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Employee {
-
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.AUTO)
-    // @Column(name = "serial_number")
-    // private long serialNumber;
 
     @Column(name = "name")
     private String name;
@@ -43,9 +40,9 @@ public class Employee {
     @Column(name = "age")
     private int age;
 
-    // @Column(name = "create_time")
-    // private String create_time ;
+    @Column(name = "create_time")
+    private Date createTime;
 
-    // @Column(name = "modify_time")
-    // private String modify_time ;
+    @Column(name = "modify_time")
+    private Date modifyTime;
 }

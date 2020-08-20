@@ -1,5 +1,7 @@
 package tw.com.cathayhodings.model;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeBo {
-
-//    private long serialNumber;
 
     private String name;
 
@@ -25,9 +25,7 @@ public class EmployeeBo {
 
     private int age;
 
-    // @Column(name = "create_time")
-    // private String create_time ;
+    private Date createTime;
 
-    // @Column(name = "modify_time")
-    // private String modify_time ;
+    private Date modifyTime;
 }
