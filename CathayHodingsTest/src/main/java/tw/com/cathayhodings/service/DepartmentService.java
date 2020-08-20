@@ -1,12 +1,14 @@
 package tw.com.cathayhodings.service;
 
+import java.util.Optional;
+
 import tw.com.cathayhodings.model.DepartmentBo;
 
 public interface DepartmentService {
 
-    public void create(DepartmentBo departmentBo);
+    public Optional<DepartmentBo> create(DepartmentBo departmentBo);
 
-    public void update(DepartmentBo departmentBo);
+    public Optional<DepartmentBo> update(DepartmentBo departmentBo);
 
-    public void delete(String departmentId);
+    public boolean delete(String departmentId);
 }

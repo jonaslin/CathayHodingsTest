@@ -42,16 +42,18 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 新增員工資料
      */
     @Override
-    public void create(EmployeeBo employeeBo) {
+    public Optional<EmployeeBo> create(EmployeeBo employeeBo) {
         EmployeeServiceImpl.logger.debug("create");
 
         String employeeId = employeeBo.getEmployeeId();
         Optional<Employee> employee = employeeDao.findById(employeeId);
         if (!employee.isPresent()) {
             employeeBo.setCreateTime(new Date());
-            save(employeeBo);
+            boolean isSuccess = save(employeeBo);
+            return isSuccess ? Optional.of(employeeBo) : Optional.empty();
         } else {
             EmployeeServiceImpl.logger.info("already exists (" + employeeId + ")");
+            return Optional.empty();
         }
     }
 
@@ -59,7 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 更新員工資料
      */
     @Override
-    public void update(EmployeeBo employeeBo) {
+    public Optional<EmployeeBo> update(EmployeeBo employeeBo) {
         EmployeeServiceImpl.logger.debug("update");
 
         String employeeId = employeeBo.getEmployeeId();
@@ -67,9 +69,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee.isPresent()) {
             employeeBo.setCreateTime(employee.get().getCreateTime());
             employeeBo.setModifyTime(new Date());
-            save(employeeBo);
+            boolean isSuccess = save(employeeBo);
+            return isSuccess ? Optional.of(employeeBo) : Optional.empty();
         } else {
             EmployeeServiceImpl.logger.info("not found (" + employeeId + ")");
+            return Optional.empty();
         }
     }
 
@@ -77,14 +81,17 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 刪除員工資料
      */
     @Override
-    public void delete(String employeeId) {
+    public boolean delete(String employeeId) {
         EmployeeServiceImpl.logger.debug("delete " + employeeId);
 
         Optional<Employee> employee = employeeDao.findById(employeeId);
-        if (employee.isPresent())
+        if (employee.isPresent()) {
             employeeDao.deleteById(employeeId);
-        else
+            return true;
+        } else {
             EmployeeServiceImpl.logger.info("not found (" + employeeId + ")");
+            return false;
+        }
     }
 
     /**
@@ -129,7 +136,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return jpaQuery.fetch();
     }
 
-    private void save(EmployeeBo employeeBo) {
+    private boolean save(EmployeeBo employeeBo) {
         Employee employee = new Employee();
         employee.setName(employeeBo.getName());
         employee.setEmployeeId(employeeBo.getEmployeeId());
@@ -138,7 +145,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Department> departmentOpt = departmentDao.findById(employeeBo.getDepartmentId());
         if (!departmentOpt.isPresent()) {
             EmployeeServiceImpl.logger.error("Department not exist (" + departmentId + ")");
-            return;
+            return false;
         }
 
         Department department = departmentOpt.get();
@@ -152,5 +159,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setModifyTime(employeeBo.getModifyTime());
 
         employeeDao.save(employee);
+        return true;
     }
 }

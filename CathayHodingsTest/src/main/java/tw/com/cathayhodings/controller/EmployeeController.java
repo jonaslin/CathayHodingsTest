@@ -1,6 +1,7 @@
 package tw.com.cathayhodings.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tw.com.cathayhodings.entity.Employee;
 import tw.com.cathayhodings.model.EmployeeBo;
+import tw.com.cathayhodings.model.ResponseVo;
 import tw.com.cathayhodings.service.EmployeeService;
 
 @RestController
@@ -34,30 +36,54 @@ public class EmployeeController {
      * 新增員工資料
      */
     @PostMapping
-    public void createEmployee(@RequestBody EmployeeBo employeeBo) {
+    public ResponseVo createEmployee(@RequestBody EmployeeBo employeeBo) {
         EmployeeController.logger.debug("addEmployee " + employeeBo.toString());
 
-        employeeService.create(employeeBo);
+        Optional<EmployeeBo> bo = employeeService.create(employeeBo);
+        ResponseVo vo = new ResponseVo();
+        if (bo.isPresent()) {
+            vo.setMessage("success");
+        } else {
+            vo.setMessage("fail");
+        }
+
+        return vo;
     }
 
     /**
      * 更新員工資料
      */
     @PatchMapping
-    public void updateEmployee(@RequestBody EmployeeBo employeeBo) {
+    public ResponseVo updateEmployee(@RequestBody EmployeeBo employeeBo) {
         EmployeeController.logger.debug("updateEmployee " + employeeBo.toString());
 
-        employeeService.update(employeeBo);
+        Optional<EmployeeBo> bo = employeeService.update(employeeBo);
+        ResponseVo vo = new ResponseVo();
+        if (bo.isPresent()) {
+            vo.setMessage("success");
+        } else {
+            vo.setMessage("fail");
+        }
+
+        return vo;
     }
 
     /**
      * 刪除員工資料
      */
     @DeleteMapping("/{employeeId}")
-    public void deleteEmployee(@PathVariable String employeeId) {
+    public ResponseVo deleteEmployee(@PathVariable String employeeId) {
         EmployeeController.logger.debug("deleteEmployee " + employeeId);
 
-        employeeService.delete(employeeId);
+        boolean isSuccess = employeeService.delete(employeeId);
+        ResponseVo vo = new ResponseVo();
+        if (isSuccess) {
+            vo.setMessage("success");
+        } else {
+            vo.setMessage("fail");
+        }
+
+        return vo;
     }
 
     /**

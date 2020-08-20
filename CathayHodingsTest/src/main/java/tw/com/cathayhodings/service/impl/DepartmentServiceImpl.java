@@ -24,44 +24,53 @@ public class DepartmentServiceImpl implements DepartmentService {
      * 新增部門資料
      */
     @Override
-    public void create(DepartmentBo departmentBo) {
+    public Optional<DepartmentBo> create(DepartmentBo departmentBo) {
         DepartmentServiceImpl.logger.debug("create");
 
         String departmentId = departmentBo.getDepartmentId();
         Optional<Department> department = departmentDao.findById(departmentId);
-        if (!department.isPresent())
+        if (!department.isPresent()) {
             save(departmentBo);
-        else
+            return Optional.of(departmentBo);
+        } else {
             DepartmentServiceImpl.logger.info("already exists (" + departmentId + ")");
+            return Optional.empty();
+        }
     }
 
     /**
      * 更新部門資料
      */
     @Override
-    public void update(DepartmentBo departmentBo) {
+    public Optional<DepartmentBo> update(DepartmentBo departmentBo) {
         DepartmentServiceImpl.logger.debug("update");
 
         String departmentId = departmentBo.getDepartmentId();
         Optional<Department> department = departmentDao.findById(departmentId);
-        if (department.isPresent())
+        if (department.isPresent()) {
             save(departmentBo);
-        else
+            return Optional.of(departmentBo);
+        } else {
             DepartmentServiceImpl.logger.info("not found (" + departmentId + ")");
+            return Optional.empty();
+        }
     }
 
     /**
      * 刪除部門資料
      */
     @Override
-    public void delete(String departmentId) {
+    public boolean delete(String departmentId) {
         DepartmentServiceImpl.logger.debug("delete " + departmentId);
 
         Optional<Department> department = departmentDao.findById(departmentId);
-        if (department.isPresent())
+        if (department.isPresent()) {
             departmentDao.deleteById(departmentId);
-        else
+            return true;
+        } else {
             DepartmentServiceImpl.logger.info("not found (" + departmentId + ")");
+            return false;
+        }
     }
 
     private void save(DepartmentBo departmentBo) {
